@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+
+<!--
+  gazebo_plgn.xacro
+  Corrected for Gazebo Harmonic (gz-sim 8) + ROS 2 Jazzy.
+
+  HOW IT WORKS:
+    - All gz-sim plugin tags are placed DIRECTLY in this file (no macro wrapper).
+    - mobman_urdf.xacro already does:
+        <xacro:include filename="...gazebo_plgn.xacro" />
+      That include is enough — no macro call is needed. Everything below
+      is emitted into the URDF automatically at include-time.
+
+  WHAT WAS REMOVED vs the original:
+    - All Classic Gazebo tags: kp, kd, mu1, mu2, maxVel, minDepth, fdir1,
+      material (Gazebo/...) inside <gazebo reference> blocks — gz-sim ignores them.
+    - libgazebo_ros_diff_drive.so  → gz-sim-diff-drive-system
+    - libgazebo_ros_ray_sensor.so  → gpu_lidar sensor (gz-sim native)
+    - libgazebo_ros_camera.so      → camera sensor  (gz-sim native)
+    - <sensor type="imu">  Classic → <sensor type="imu"> gz-sim style
+    - Transmission blocks (SimpleTransmission / PositionJointInterface) —
+      these belong to ros2_control, not to the URDF gazebo section.
+
+  TOPICS (match your bridge_config.yaml exactly):
+    cmd_vel  : /mobman/cmd_vel   (ROS→GZ  TwistStamped → Twist)
+    odom     : /mobman/odom      (GZ→ROS  Odometry)
+    imu      : /mobman/imu       (GZ→ROS  IMU)
+    scan     : /scan           (GZ→ROS  LaserScan)  — add to bridge if needed
+    camera   : /camera/image   (GZ→ROS  Image)      — add to bridge if needed
+-->
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <gazebo>
+    <plugin filename="gz-sim-diff-drive-system"
+      name="gz::sim::systems::DiffDrive">
+      <left_joint>wheel_left_joint</left_joint>
+      <right_joint>wheel_right_joint</right_joint>
+      <wheel_separation>0.287</wheel_separation>
+      <wheel_radius>0.033</wheel_radius>
+      <max_linear_acceleration>1.0</max_linear_acceleration>
+      <min_linear_acceleration>-1.0</min_linear_acceleration>
+      <max_angular_acceleration>2.0</max_angular_acceleration>
+      <min_angular_acceleration>-2.0</min_angular_acceleration>
+      <odom_publish_frequency>10</odom_publish_frequency>
+      <topic>/cmd_vel</topic>
+      <odom_topic>/odom</odom_topic>
+      <tf_topic>/tf</tf_topic>
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_footprint</child_frame_id>
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="imu_link">
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <topic>/imu</topic>
+      <gz_frame_id>imu_link</gz_frame_id>
+      <imu>
+        <angular_velocity>
+          <x>
+            <noise type="gaussian">
+              <mean>0</mean>
+              <stddev>0.009</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0</mean>
+              <stddev>0.009</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0</mean>
+              <stddev>0.009</stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>
+            <noise type="gaussian">
+              <mean>0</mean>
+              <stddev>0.021</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0</mean>
+              <stddev>0.021</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0</mean>
+              <stddev>0.021</stddev>
+            </noise>
+          </z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+  </gazebo>
+  <gazebo reference="base_scan">
+    <sensor name="lidar" type="gpu_lidar">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>5</update_rate>
+      <topic>/scan</topic>
+      <gz_frame_id>base_scan</gz_frame_id>
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>0.0</min_angle>
+            <max_angle>6.28319</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.120</min>
+          <max>3.5</max>
+          <resolution>0.015</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </lidar>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="camera_rgb_frame">
+    <sensor name="depth_camera" type="rgbd_camera">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>5.0</update_rate>
+      <topic>/depth_camera</topic>
+      <gz_frame_id>camera_link</gz_frame_id>
+      <camera>
+        <horizontal_fov>1.047198</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>3</far>
+        </clip>
+      </camera>
+      <baseline>0.2</baseline>
+      <pointCloudCutoff>0.5</pointCloudCutoff>
+      <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+      <distortionK1>0</distortionK1>
+      <distortionK2>0</distortionK2>
+      <distortionK3>0</distortionK3>
+      <distortionT1>0</distortionT1>
+      <distortionT2>0</distortionT2>
+      <CxPrime>0</CxPrime>
+      <Cx>0</Cx>
+      <Cy>0</Cy>
+      <focalLength>0</focalLength>
+      <hackBaseline>0</hackBaseline>
+    </sensor>
+  </gazebo>
+<!-- 
+  <gazebo>
+    <plugin filename="gz-sim-joint-state-publisher-system"
+      name="gz::sim::systems::JointStatePublisher">
+      <topic>/joint_states</topic>
+    </plugin>
+  </gazebo> -->
+
+  <gazebo>
+    <plugin filename="gz-sim-odometry-publisher-system"
+      name="gz::sim::systems::OdometryPublisher">
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
+      <odom_publish_frequency>10</odom_publish_frequency>
+      <odom_topic>/odom</odom_topic>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find mobman_moveit_config)/config/ros2_controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+</robot>

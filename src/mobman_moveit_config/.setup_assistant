@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: mobman_description
+    relative_path: urdf/mobman.urdf.xacro
+  srdf:
+    relative_path: config/mobman.srdf
+  package_settings:
+    author_name: Dharmik_Vekariya
+    author_email: dharmikvekariya11400@gmail.com
+    generated_timestamp: 1778850900
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

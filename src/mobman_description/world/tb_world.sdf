@@ -1,0 +1,169 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+
+<world name="tb3_house">
+
+  <!-- Physics -->
+  <physics name="1ms" type="ignored">
+    <max_step_size>0.001</max_step_size>
+    <real_time_factor>1.0</real_time_factor>
+  </physics>
+
+  <!-- Plugins -->
+  <plugin
+      filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+  </plugin>
+
+  <plugin
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+  </plugin>
+
+  <plugin
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+  </plugin>
+
+  <!-- Light -->
+  <light type="directional" name="sun">
+    <cast_shadows>true</cast_shadows>
+    <pose>0 0 10 0 0 0</pose>
+    <diffuse>0.8 0.8 0.8 1</diffuse>
+    <specular>0.2 0.2 0.2 1</specular>
+    <direction>-0.5 0.1 -0.9</direction>
+  </light>
+
+  <!-- Ground -->
+  <model name="ground_plane">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>50 50</size>
+          </plane>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>50 50</size>
+          </plane>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+
+  <!-- Walls -->
+  <!-- outer box -->
+  <model name="house_walls">
+    <static>true</static>
+
+    <!-- wall 1 -->
+    <link name="wall1">
+      <pose>0 5 1 0 0 0</pose>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>10 0.2 2</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>10 0.2 2</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+
+    <!-- wall 2 -->
+    <link name="wall2">
+      <pose>0 -5 1 0 0 0</pose>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>10 0.2 2</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>10 0.2 2</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+
+    <!-- wall 3 -->
+    <link name="wall3">
+      <pose>5 0 1 0 0 1.5707</pose>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>10 0.2 2</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>10 0.2 2</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+
+    <!-- wall 4 -->
+    <link name="wall4">
+      <pose>-5 0 1 0 0 1.5707</pose>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>10 0.2 2</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>10 0.2 2</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+
+    <!-- inner room -->
+    <link name="inner_wall">
+      <pose>0 0 1 0 0 0</pose>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>5 0.2 2</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>5 0.2 2</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+
+  </model>
+
+</world>
+</sdf>
