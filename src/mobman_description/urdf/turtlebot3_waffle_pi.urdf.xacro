@@ -232,7 +232,7 @@ https://github.com/ROBOTIS-GIT/turtlebot3/blob/kinetic-devel/turtlebot3_descript
       <collision>
         <origin xyz="0.015 0 -0.0065" rpy="0 0 0" />
         <geometry>
-          <cylinder length="0.0315" radius="0.055" />
+          <mesh filename="${meshes_file_direction}/ladar.stl" scale="0.001 0.001 0.001" />
         </geometry>
       </collision>
 

@@ -33,3 +33,4 @@ gripper_moveit_controller:
       - velocity
     joints:
       - gripper_left_joint
+      - gripper_right_joint
