@@ -29,17 +29,17 @@ ekf_filter_node:
 #         from robot_localization! However, that instance should *not* fuse the global data.
         # map_frame: map              # Defaults to "map" if unspecified
         odom_frame: odom            # Defaults to "odom" if unspecified
-        base_link_frame: base_link  # Defaults to "base_link" if unspecified
+        base_link_frame: base_footprint  # Aligned with Gazebo and SRDF base frame
         world_frame: odom           # Defaults to the value of odom_frame if unspecified
 
-        odom0: mobman/odom
+        odom0: /odom
         odom0_config: [false, false, false,
                       false, false, false,
                       true, true, false,
                       false, false, true,
                       false, false, false]
 
-        imu0: mobman/imu
+        imu0: /imu
         imu0_config: [false, false, false,
                       false, false, false,
                       false, false, false,

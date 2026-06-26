@@ -1,29 +1,3 @@
-# ============================================================================
-# CRITICAL: cmd_vel REMAPPING REQUIRED IN YOUR LAUNCH FILE
-# ============================================================================
-# Nav2 publishes velocity commands to /cmd_vel but your robot subscribes to
-# /mobman/cmd_vel (or similar gz-sim topic). Without remapping, the robot
-# will never move — Nav2 plans correctly but commands go nowhere.
-#
-# In your launch file, add this remapping to the nav2_bringup launch or
-# your component container:
-#
-#   remappings=[('/cmd_vel', '/mobman/cmd_vel')]
-#
-# OR use a standalone relay node:
-#
-#   ros2 run topic_tools relay /cmd_vel /mobman/cmd_vel
-#
-# Run this to confirm which topic your gz-sim robot actually subscribes to:
-#   ros2 topic info /mobman/cmd_vel
-#   gz topic -l | grep cmd
-#
-# Also verify your robot_localization EKF is fusing /mobman/odom correctly:
-#   ros2 topic echo /odometry/filtered --once
-# The covariance values must NOT all be zero — if they are, check your
-# ekf.yaml and make sure odom0 points to /mobman/odom.
-# ============================================================================
-
 amcl:
   ros__parameters:
     use_sim_time: true
@@ -56,9 +30,7 @@ amcl:
     save_pose_rate: 0.5
     sigma_hit: 0.2
     tf_broadcast: true
-    # FIX 1: Raised from 1.0 to 2.0 to handle gz-sim clock startup lag.
-    # The WARN "Lookup would require extrapolation into the future" is caused
-    # by gz-sim's sim clock advancing faster than TF can buffer on startup.
+    
     transform_tolerance: 2.0
     update_min_a: 0.2
     update_min_d: 0.25
@@ -66,14 +38,7 @@ amcl:
     z_max: 0.05
     z_rand: 0.5
     z_short: 0.05
-    scan_topic: scan
-    # FIX 9: Provide a set_initial_pose so AMCL never waits for an external
-    # /initialpose message on startup. The TF extrapolation warning on
-    # initialPoseReceived happens because the callback does a TF lookup with
-    # a hardcoded near-zero timeout that ignores transform_tolerance entirely.
-    # By seeding the pose here, that callback path is bypassed at startup.
-    # Set these to match your robot's spawn pose in Gazebo. The values below
-    # (0, 0, 0) assume the robot spawns at the map origin — adjust if not.
+    scan_topic: /scan
     set_initial_pose: true
     initial_pose_x: 0.0
     initial_pose_y: 0.0
@@ -105,8 +70,6 @@ controller_server:
     use_sim_time: true
     controller_frequency: 20.0
     min_x_velocity_threshold: 0.001
-    # FIX 2: Was 0.5 — far too high for a diff-drive robot, caused the
-    # controller to ignore nearly all lateral velocity feedback.
     min_y_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
     failure_tolerance: 0.3
@@ -148,7 +111,6 @@ controller_server:
       sim_time: 1.7
       linear_granularity: 0.05
       angular_granularity: 0.025
-      # FIX 3: Raised to match AMCL tolerance; keeps DWB and TF in sync.
       transform_tolerance: 2.0
       xy_goal_tolerance: 0.25
       trans_stopped_velocity: 0.25
@@ -187,8 +149,6 @@ local_costmap:
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
-        # FIX 4: Was True — publishing the voxel map triggered an ImageMagick
-        # segfault (SIGSEGV signal 11) on shutdown. Disabled to prevent crash.
         publish_voxel_map: False
         origin_z: 0.0
         z_resolution: 0.05
@@ -338,8 +298,6 @@ collision_monitor:
     use_sim_time: true
     base_frame_id: "base_footprint"
     odom_frame_id: "odom"
-    # FIX 5: Raised from 0.1 to match system-wide tolerance; prevents
-    # collision_monitor from rejecting scan data due to sim clock skew.
     transform_tolerance: 2.0
     source_timeout: 5.0
     stop_pub_timeout: 2.0
@@ -353,8 +311,6 @@ collision_monitor:
       points: "[[0.4, 0.3], [0.4, -0.3], [-0.4, -0.3], [-0.4, 0.3]]"
       action_type: "slowdown"
       slowdown_ratio: 0.5
-      # FIX 6: Required in Jazzy for "slowdown" action_type. Without this,
-      # the collision_monitor logs a warning and the slowdown has no effect.
       max_time_before_impact: 1.5
       visualize: True
     FootprintStop:
@@ -362,70 +318,3 @@ collision_monitor:
       points: "[[0.3, 0.2], [0.3, -0.2], [-0.3, -0.2], [-0.3, 0.2]]"
       action_type: "stop"
       visualize: True
-
-# FIX 8: docking_server was crashing with "An error occurred while getting
-# the dock plugins!" because the node was being launched (by the launch file)
-# with no plugin configuration at all. This stub satisfies the plugin loader.
-# If you don't use docking, simply remove docking_server from your launch file
-# AND from the node_names list below. If you do use docking, replace the
-# SimpleChargingDock entry with your actual dock plugin.
-docking_server:
-  ros__parameters:
-    use_sim_time: true
-    controller_frequency: 50.0
-    initial_perception_timeout: 5.0
-    wait_charge_timeout: 5.0
-    dock_approach_timeout: 30.0
-    undock_linear_tolerance: 0.05
-    undock_angular_tolerance: 0.1
-    max_retries: 3
-    base_frame: "base_link"
-    fixed_frame: "odom"
-    dock_backwards: false
-    dock_prestaging_tolerance: 0.5
-    dock_plugins: ["simple_charging_dock"]
-    simple_charging_dock:
-      plugin: "opennav_docking::SimpleChargingDock"
-      docking_threshold: 0.05
-      staging_x_offset: -0.7
-      use_external_detection_pose: false
-      use_battery_status: false
-    # NOTE: Do not set "docks: []" — an empty list parses as a tuple in
-    # ROS2's YAML loader and causes the launch-time TypeError you saw.
-    # Omit this key entirely when you have no physical docks configured.
-    # To add docks later, use the pattern:
-    # dock_plugins: ["my_dock"]
-    # my_dock:
-    #   type: "simple_charging_dock"
-    #   frame: map
-    #   pose: [x, y, yaw]
-
-lifecycle_manager_navigation:
-  ros__parameters:
-    use_sim_time: true
-    autostart: true
-    node_names:
-      - controller_server
-      - smoother_server
-      - planner_server
-      - behavior_server
-      - bt_navigator
-      - waypoint_follower
-      - velocity_smoother
-      - collision_monitor
-      - docking_server
-    # FIX 7: Raised from 10.0 to 30.0. gz-sim's sim clock can pause during
-    # world loading, causing the lifecycle manager to declare nodes dead and
-    # trigger the cascade shutdown seen in the logs ("SERVER amcl IS DOWN").
-    bond_timeout: 30.0
-
-lifecycle_manager_localization:
-  ros__parameters:
-    use_sim_time: true
-    autostart: true
-    node_names:
-      - map_server
-      - amcl
-    # FIX 7 (same): Must match navigation manager; asymmetric timeouts
-    # cause the localization stack to outlive or pre-empt navigation startup.
-    bond_timeout: 30.0

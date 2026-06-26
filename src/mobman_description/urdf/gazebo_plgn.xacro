@@ -45,7 +45,6 @@
       <odom_publish_frequency>10</odom_publish_frequency>
       <topic>/cmd_vel</topic>
       <odom_topic>/odom</odom_topic>
-      <tf_topic>/tf</tf_topic>
       <frame_id>odom</frame_id>
       <child_frame_id>base_footprint</child_frame_id>
     </plugin>
@@ -102,6 +101,7 @@
       </imu>
     </sensor>
   </gazebo>
+  
   <gazebo reference="base_scan">
     <sensor name="lidar" type="gpu_lidar">
       <always_on>true</always_on>
@@ -132,37 +132,28 @@
     </sensor>
   </gazebo>
 
-  <gazebo reference="camera_rgb_frame">
-    <sensor name="depth_camera" type="rgbd_camera">
+  <gazebo reference="intel_camera_color_optical_frame">
+    <sensor name="intel_depth_camera" type="rgbd_camera">
       <always_on>true</always_on>
       <visualize>true</visualize>
       <update_rate>5.0</update_rate>
-      <topic>/depth_camera</topic>
-      <gz_frame_id>camera_link</gz_frame_id>
+      <topic>intel_camera</topic>
+      <gz_frame_id>intel_camera_color_optical_frame</gz_frame_id>
       <camera>
         <horizontal_fov>1.047198</horizontal_fov>
         <image>
           <width>640</width>
           <height>480</height>
+          <format>R8G8B8</format>
         </image>
         <clip>
           <near>0.05</near>
-          <far>3</far>
+          <far>10.0</far>
         </clip>
+        <depth_camera>
+          <output>depths</output>
+        </depth_camera>
       </camera>
-      <baseline>0.2</baseline>
-      <pointCloudCutoff>0.5</pointCloudCutoff>
-      <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
-      <distortionK1>0</distortionK1>
-      <distortionK2>0</distortionK2>
-      <distortionK3>0</distortionK3>
-      <distortionT1>0</distortionT1>
-      <distortionT2>0</distortionT2>
-      <CxPrime>0</CxPrime>
-      <Cx>0</Cx>
-      <Cy>0</Cy>
-      <focalLength>0</focalLength>
-      <hackBaseline>0</hackBaseline>
     </sensor>
   </gazebo>
 <!-- 

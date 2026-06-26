@@ -8,6 +8,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
+find_package(std_srvs REQUIRED)
 
 add_executable(pick_and_place_node src/pickandplace.cpp)
 
@@ -15,6 +16,7 @@ ament_target_dependencies(pick_and_place_node
   rclcpp
   moveit_ros_planning_interface
   geometry_msgs
+  std_srvs
 )
 
 install(TARGETS pick_and_place_node

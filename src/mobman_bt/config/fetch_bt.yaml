@@ -1,0 +1,18 @@
+fetch_bt_node:
+  ros__parameters:
+    cmd_vel_topic: /cmd_vel
+    detection_topic: /detected_object_3d
+    label_topic: /detected_object_label
+    map_frame: map
+    base_frame: base_link
+    navigate_action: /navigate_to_pose
+    pick_service: /pick_object
+
+    detection_timeout_sec: 1.5
+    search_timeout_sec: 45.0
+    search_angular_z: 0.35
+    object_standoff_m: 0.55
+
+    home_x: 0.0
+    home_y: 0.0
+    home_yaw: 0.0
