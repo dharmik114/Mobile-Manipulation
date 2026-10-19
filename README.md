@@ -55,7 +55,7 @@ ros2 launch mobman_description display.launch.py
 ```
 ```bash
 # Replace this path with the absolute path to your own map file.
-ros2 launch mobman_navigation navigation.launch.py map:=<Absolute_Path_to_>/mobman/src/mobman_navigation/map/my_map.yaml 
+ros2 launch mobman_navigation navigation.launch.py map:=<Absolute_Path_to_>/src/mobman_navigation/map/my_map.yaml 
 ```
 
 ## Future Goals
