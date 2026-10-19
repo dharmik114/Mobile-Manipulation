@@ -32,8 +32,8 @@ The navigation subsystem has been implemented and tested in simulation.
 Clone the repository:
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-cd YOUR_REPOSITORY_NAME
+git clone https://github.com/dharmik114/Mobile-Manipulation/tree/main
+cd <YOUR_REPOSITORY_NAME>
 ```
 
 Install dependencies and build the workspace:
@@ -54,6 +54,7 @@ Launch the simulation and navigation using the launch files provided in the repo
 ros2 launch mobman_description display.launch.py 
 ```
 ```bash
+# Replace this path with the absolute path to your own map file.
 ros2 launch mobman_navigation navigation.launch.py map:=<Absolute_Path_to_>/mobman/src/mobman_navigation/map/my_map.yaml 
 ```
 
