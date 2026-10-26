@@ -2,8 +2,6 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mobman">
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
 
-    <xacro:arg name="controller_params_file" default="" />
-
     <!-- Import mobman urdf file -->
     <xacro:include filename="$(find mobman_description)/urdf/mobman.urdf.xacro" />
 
@@ -11,6 +9,6 @@
     <xacro:include filename="mobman.ros2_control.xacro" />
 
 
-    <xacro:mobman_ros2_control name="GazeboSimSystem" initial_positions_file="$(arg initial_positions_file)"/>
+    <xacro:mobman_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
 
 </robot>
