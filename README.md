@@ -12,6 +12,11 @@ The project is being developed in simulation, starting with autonomous navigatio
 - Working xManipulator using Moveit2.
 - Planned integration of object detection and robotic manipulation.
 
+## Working of Navigation and Manipulation
+
+[Screencast from 2026-10-26 13-07-53.webm](https://github.com/user-attachments/assets/60ba3d84-4b53-4b49-b757-72a55ef9dda5)
+
+
 ## Development Timeline
 
 - [x] Set up the TurtleBot3 Waffle simulation.
