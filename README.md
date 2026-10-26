@@ -9,18 +9,20 @@ The project is being developed in simulation, starting with autonomous navigatio
 - Autonomous navigation using Nav2.
 - Static and dynamic obstacle avoidance.
 - Gazebo simulation of the mobile robot.
+- Working xManipulator using Moveit2.
 - Planned integration of object detection and robotic manipulation.
 
-## Navigation Demonstration
+## Working of Navigation and Manipulation
 
-The navigation subsystem has been implemented and tested in simulation.
+[Screencast from 2026-10-26 13-07-53.webm](https://github.com/user-attachments/assets/60ba3d84-4b53-4b49-b757-72a55ef9dda5)
+
 
 ## Development Timeline
 
 - [x] Set up the TurtleBot3 Waffle simulation.
 - [x] Implement autonomous navigation using Nav2.
 - [x] Test obstacle avoidance.
-- [ ] Integrate the X-series manipulator.
+- [x] Integrate the X-series manipulator.
 - [ ] Configure MoveIt 2 for motion planning.
 - [ ] Integrate the Intel RealSense camera for object detection and localization.
 - [ ] Implement object grasping and placement.
@@ -54,8 +56,10 @@ Launch the simulation and navigation using the launch files provided in the repo
 ros2 launch mobman_description display.launch.py 
 ```
 ```bash
-# Replace this path with the absolute path to your own map file.
-ros2 launch mobman_navigation navigation.launch.py map:=<Absolute_Path_to_>/src/mobman_navigation/map/my_map.yaml 
+# for Nav2
+ros2 launch mobman_navigation navigation.launch.py
+# for Moveit2
+ros2 launch mobman_moveit_config move_group.launch.py
 ```
 
 ## Future Goals
