@@ -90,13 +90,13 @@ def generate_launch_description():
     spawn_arm_controller = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["manipulator_moveit_controller"],
+        arguments=["arm_controller"],
     )
 
     spawn_gripper_controller = Node(
     package="controller_manager",
     executable="spawner",
-    arguments=["gripper_moveit_controller"],
+    arguments=["gripper_controller"],
     )
 
     controller_spawners = RegisterEventHandler(

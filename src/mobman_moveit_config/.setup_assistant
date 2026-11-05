@@ -5,9 +5,9 @@ moveit_setup_assistant_config:
   srdf:
     relative_path: config/mobman.srdf
   package_settings:
-    author_name: Dharmik_Vekariya
-    author_email: dharmikvekariya11400@gmail.com
-    generated_timestamp: 1778850900
+    author_name: Dharmik Vekariya
+    author_email: dharmikvekariya1140@gmail.com
+    generated_timestamp: 1793620569
   control_xacro:
     command:
       - position

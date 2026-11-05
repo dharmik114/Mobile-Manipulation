@@ -11,6 +11,7 @@ find_package(moveit_ros_planning_interface REQUIRED)
 find_package(std_srvs REQUIRED)
 
 add_executable(pick_and_place_node src/pickandplace.cpp)
+add_executable(floor_reach_map src/floor_reach.cpp)
 
 ament_target_dependencies(pick_and_place_node
   rclcpp
@@ -19,7 +20,15 @@ ament_target_dependencies(pick_and_place_node
   std_srvs
 )
 
+ament_target_dependencies(floor_reach_map
+  rclcpp
+  moveit_ros_planning_interface
+  geometry_msgs
+  std_srvs
+)
+
 install(TARGETS pick_and_place_node
+  floor_reach_map
   DESTINATION lib/${PROJECT_NAME}
 )
 

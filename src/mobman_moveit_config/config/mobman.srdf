@@ -9,13 +9,6 @@
     <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
     <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
     <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
-    <group name="gripper">
-        <link name="end_effector_link"/>
-        <link name="gripper_left_link"/>
-        <link name="gripper_right_link"/>
-        <joint name="gripper_left_joint"/>
-        <joint name="gripper_right_joint"/>
-    </group>
     <group name="arm">
         <link name="link1"/>
         <link name="link2"/>
@@ -28,17 +21,23 @@
         <joint name="joint3"/>
         <joint name="joint4"/>
     </group>
+    <group name="gripper">
+        <link name="end_effector_link"/>
+        <link name="gripper_left_link"/>
+        <link name="gripper_right_link"/>
+        <joint name="gripper_left_joint"/>
+    </group>
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
-    <group_state name="Default" group="arm">
+    <group_state name="default" group="arm">
         <joint name="joint1" value="0"/>
-        <joint name="joint2" value="-1.475"/>
-        <joint name="joint3" value="1.3823"/>
-        <joint name="joint4" value="0.3903"/>
+        <joint name="joint2" value="-1.45"/>
+        <joint name="joint3" value="1.35"/>
+        <joint name="joint4" value="0.6"/>
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
-    <end_effector name="hand" parent_link="end_effector_link" group="gripper" parent_group="arm"/>
+    <end_effector name="gripper" parent_link="end_effector_link" group="gripper" parent_group="arm"/>
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
-    <virtual_joint name="virtual_joint" type="floating" parent_frame="map" child_link="base_footprint"/>
+    <virtual_joint name="virtual_joint" type="fixed" parent_frame="odom" child_link="base_footprint"/>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="base_link" link2="base_scan" reason="Adjacent"/>
     <disable_collisions link1="base_link" link2="camera_link" reason="Adjacent"/>
@@ -88,7 +87,6 @@
     <disable_collisions link1="gripper_right_link" link2="intel_camera" reason="Never"/>
     <disable_collisions link1="gripper_right_link" link2="link4" reason="Never"/>
     <disable_collisions link1="gripper_right_link" link2="link5" reason="Adjacent"/>
-    <disable_collisions link1="intel_camera" link2="link3" reason="Never"/>
     <disable_collisions link1="intel_camera" link2="link5" reason="Adjacent"/>
     <disable_collisions link1="link1" link2="link2" reason="Adjacent"/>
     <disable_collisions link1="link1" link2="link3" reason="Never"/>
