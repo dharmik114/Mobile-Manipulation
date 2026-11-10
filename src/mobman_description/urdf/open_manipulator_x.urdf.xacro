@@ -304,13 +304,7 @@ https://github.com/ROBOTIS-GIT/open_manipulator/blob/kinetic-devel/open_manipula
         <geometry>
           <box size="0.01 0.01 0.01" />
         </geometry>
-        <material name="red" />
       </visual>
-      <collision>
-        <geometry>
-          <box size="0.01 0.01 0.01" />
-        </geometry>
-      </collision>
     </link>
 
   </xacro:macro>

@@ -25,7 +25,7 @@
         <collision name='collision'>
           <geometry>
             <plane>
-              <normal>0 0 1</normal>
+              <normal>0 0 0.1</normal>
               <size>20 20</size>
             </plane>
           </geometry>
@@ -40,7 +40,7 @@
         <visual name='visual'>
           <geometry>
             <plane>
-              <normal>0 0 1</normal>
+              <normal>0 0 0.1</normal>
               <size>20 20</size>
             </plane>
           </geometry>
@@ -71,12 +71,12 @@
     
     <!-- Graspable Target Object for the Manipulator -->
     <model name='pickup_box'>
-      <pose>0.22 0.0 0.02 0 0 0</pose>
+      <pose>0.243 0.0 1 0 0 0</pose>
       <link name='link'>
         <collision name='collision'>
           <geometry>
             <box>
-              <size>0.04 0.04 0.04</size>
+              <size>0.025 0.025 0.075</size>
             </box>
           </geometry>
           <surface>
@@ -98,7 +98,7 @@
         <visual name='visual'>
           <geometry>
             <box>
-              <size>0.04 0.04 0.04</size>
+              <size>0.025 0.025 0.075</size>
             </box>
           </geometry>
           <material>
@@ -109,7 +109,7 @@
         </visual>
         <inertial>
           <pose>0 0 0 0 0 0</pose>
-          <mass>0.05</mass>
+          <mass>0.005</mass>
           <inertia>
             <ixx>0.00001</ixx>
             <ixy>0</ixy>
