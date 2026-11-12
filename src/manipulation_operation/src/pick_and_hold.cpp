@@ -13,10 +13,10 @@ using moveit::planning_interface::MoveGroupInterface;
 // Pick position (Cartesian, frame: base_footprint, link: end_effector_link)
 constexpr double kPickX = 0.246;
 constexpr double kPickY = 0.0;
-constexpr double kPickZ = 0.010;
+constexpr double kPickZ = 0.0125;
 
 // Gripper closed position (same value as your original code)
-constexpr double kGripperClosedPosition = -0.009;
+constexpr double kGripperClosedPosition = -0.025;
 
 // Hold pose in JOINT space (radians): j1=0, j2=0, j3=0, j4=45 deg.
 // This equals the Cartesian pose measured with tf2_echo:

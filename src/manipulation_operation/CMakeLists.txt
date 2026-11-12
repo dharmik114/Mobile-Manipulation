@@ -12,6 +12,7 @@ find_package(std_srvs REQUIRED)
 
 add_executable(pick_and_place_node src/pickandplace.cpp)
 add_executable(pick_and_hold_node src/pick_and_hold.cpp)
+add_executable(move_and_place_node src/move_and_place.cpp)
 
 ament_target_dependencies(pick_and_place_node
   rclcpp
@@ -27,8 +28,16 @@ ament_target_dependencies(pick_and_hold_node
   std_srvs
 )
 
+ament_target_dependencies(move_and_place_node
+  rclcpp
+  moveit_ros_planning_interface
+  geometry_msgs
+  std_srvs
+)
+
 install(TARGETS pick_and_place_node
   pick_and_hold_node
+  move_and_place_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
