@@ -1,32 +1,43 @@
 # Mobile Manipulation Robot
 
-This project aims to develop a mobile robot capable of autonomously retrieving objects on command. Using a TurtleBot3 Waffle equipped with an X-series manipulator, the robot will navigate to a known object location, detect the target using an Intel RealSense camera, pick it up, and deliver it to a specified location.
+This project develops a mobile robot that can autonomously retrieve objects on command. A TurtleBot3 Waffle Pi carries an OpenManipulator-X arm. The robot navigates to a known object location, detects the target cube with an RGB-D camera, picks it up, delivers it to a drop location and returns to its start position.
 
-The project is being developed in simulation, starting with autonomous navigation and progressing toward a complete pick-and-place system.
+The project is developed in simulation (ROS 2 Jazzy, Gazebo Sim), starting with navigation and manipulation as separate subsystems and progressing toward a complete, automatic fetch-and-deliver workflow.
 
 ## Current Features
 
-- Autonomous navigation using Nav2.
-- Static and dynamic obstacle avoidance.
-- Gazebo simulation of the mobile robot.
-- Working xManipulator using Moveit2.
-- Planned integration of object detection and robotic manipulation.
+- Gazebo simulation of the combined mobile manipulator (TurtleBot3 Waffle Pi + OpenManipulator-X) with LiDAR, IMU and RGB-D camera, connected to ROS 2 through `ros_gz_bridge`.
+- Autonomous navigation with Nav2 (AMCL localization, NavFn global planner, DWB local planner) on a pre-built map, with static and dynamic obstacle avoidance.
+- Odometry and IMU fusion with an EKF.
+- MoveIt 2 configuration for the arm and gripper (position-only KDL inverse kinematics for the 4-DOF arm) and `ros2_control` trajectory controllers.
+- Pick-and-hold and move-and-place routines: the arm moves to a given position, closes or opens the gripper, and returns to a fixed hold pose.
+- Planned: object detection, behavior-tree task sequencing and a task manager interface.
 
 ## Working of Navigation and Manipulation
 
-[Screencast from 2026-10-26 13-07-53.webm](https://github.com/user-attachments/assets/60ba3d84-4b53-4b49-b757-72a55ef9dda5)
+<!-- Replace the line below with your demo video link -->
+[Demo video: navigation, pick and hold, move and place](ADD_VIDEO_LINK_HERE)
 
+## Repository Structure
+
+| Package | Description |
+|---|---|
+| `mobman_description` | Robot model (URDF/xacro), Gazebo worlds, sensor plugins, `ros_gz_bridge` and EKF configuration, simulation launch files |
+| `mobman_navigation` | Nav2 configuration (parameters, costmaps), saved map, navigation launch file and `nav_to_pose.py` (forwards `/goal_pose` to Nav2) |
+| `mobman_moveit_config` | MoveIt 2 configuration: planning groups, kinematics, joint limits, `ros2_control` controllers, `move_group` launch file |
+| `manipulation_operation` | C++ nodes for arm motion: `pick_and_hold_node`, `move_and_place_node`, `pick_and_place_node` |
 
 ## Development Timeline
 
-- [x] Set up the TurtleBot3 Waffle simulation.
+- [x] Set up the TurtleBot3 Waffle Pi simulation.
 - [x] Implement autonomous navigation using Nav2.
 - [x] Test obstacle avoidance.
-- [x] Integrate the X-series manipulator.
-- [ ] Configure MoveIt 2 for motion planning.
-- [ ] Integrate the Intel RealSense camera for object detection and localization.
-- [ ] Implement object grasping and placement.
-- [ ] Integrate navigation and manipulation into a complete workflow.
+- [x] Integrate the OpenManipulator-X manipulator.
+- [x] Configure MoveIt 2 for motion planning.
+- [x] Implement object pick-and-hold and move-and-place with the arm.
+- [ ] Integrate the RGB-D camera for cube detection and localization.
+- [ ] Sequence navigation and manipulation with a behavior tree.
+- [ ] Build a task manager interface with cube selection, cancel and emergency stop.
 - [ ] Implement object retrieval commands, such as "Bring me the red cube."
 
 ## Installation
@@ -34,8 +45,8 @@ The project is being developed in simulation, starting with autonomous navigatio
 Clone the repository:
 
 ```bash
-git clone https://github.com/dharmik114/Mobile-Manipulation/tree/main
-cd <YOUR_REPOSITORY_NAME>
+git clone https://github.com/dharmik114/Mobile-Manipulation.git
+cd Mobile-Manipulation
 ```
 
 Install dependencies and build the workspace:
@@ -50,18 +61,38 @@ source install/setup.bash
 
 ## Running the Project
 
-Launch the simulation and navigation using the launch files provided in the repository.
+Run each command in a separate terminal (source `install/setup.bash` in each).
 
 ```bash
-ros2 launch mobman_description display.launch.py 
+# 1. Gazebo simulation and robot
+ros2 launch mobman_description display.launch.py
 ```
 ```bash
-# for Nav2
+# 2. Navigation (Nav2)
 ros2 launch mobman_navigation navigation.launch.py
-# for Moveit2
+```
+```bash
+# 3. Motion planning (MoveIt 2)
 ros2 launch mobman_moveit_config move_group.launch.py
+```
+
+Set the initial pose in RViz first, then send a navigation goal with the RViz "2D Goal Pose" tool. To forward `/goal_pose` goals to Nav2 through the helper node:
+
+```bash
+python3 src/mobman_navigation/src/nav_to_pose.py
+```
+
+Run the arm routines (the arm moves as soon as the node starts):
+
+```bash
+# Pick the object and move to the hold pose
+ros2 run manipulation_operation pick_and_hold_node
+```
+```bash
+# Move to the place position, release the object and return to the hold pose
+ros2 run manipulation_operation move_and_place_node
 ```
 
 ## Future Goals
 
-The final goal is to create a mobile manipulation system that combines autonomous navigation, object perception, and robotic arm control to retrieve and deliver objects with minimal human intervention.
+The final goal is a mobile manipulation system that combines autonomous navigation, object perception and robotic arm control to retrieve and deliver objects with minimal human intervention: one button press (red, green or blue cube) starts a fully automatic run, with cancel and emergency-stop support. Deployment on the real robot is planned as future work.
